@@ -1,0 +1,18 @@
+/* Estilos personalizados */
+.inicio {
+    background-color: #f8f9fa;
+    padding: 100px 0;
+}
+
+h2 {
+    margin-bottom: 40px;
+}
+
+form .btn-primary:hover {
+    background-color: #218838;
+}
+
+footer {
+    background-color: #343a40;
+    color: white;
+}
