@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actividad: Modelo orientado a eventos</title>
+<style>
+  :root { --tinta:#1d2a44; --papel:#fbfaf6; --linea:#c9cfdd; --azul:#2f5bd8; --suave:#eef1f9; --ok:#2e7d4f; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--papel); color:var(--tinta); font:16px/1.55 Georgia, "Times New Roman", serif; }
+  main { max-width:960px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font-size:1.7rem; margin:0 0 4px; }
+  h2 { font-size:1.15rem; margin:28px 0 8px; }
+  p { max-width:70ch; margin:6px 0; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+  @media (max-width:700px){ .grid{ grid-template-columns:1fr; } }
+  .panel { background:#fff; border:1px solid var(--linea); border-radius:6px; padding:14px; }
+  .panel h3 { margin:0 0 10px; font-size:1rem; }
+  .fila { display:flex; gap:8px; }
+  input[type=text] { flex:1; padding:8px; font:inherit; border:1px solid var(--linea); border-radius:4px; }
+  button { padding:8px 14px; font:inherit; border:1px solid var(--azul); background:var(--azul); color:#fff; border-radius:4px; cursor:pointer; }
+  button.sec { background:#fff; color:var(--azul); }
+  button.resaltado { background:#b6f2b6; color:var(--tinta); border-color:var(--ok); }
+  button:focus-visible, input:focus-visible, li:focus-visible { outline:3px solid #f0a500; outline-offset:2px; }
+  ul#lista { list-style:none; margin:12px 0 0; padding:0; min-height:140px; border:1px solid var(--linea); border-radius:4px; }
+  ul#lista li { padding:8px 10px; border-bottom:1px solid var(--suave); cursor:pointer; user-select:none; }
+  ul#lista li.seleccionada { background:var(--suave); box-shadow:inset 3px 0 0 var(--azul); }
+  ul#lista li.hecha { text-decoration:line-through; color:#6b7590; }
+  #estado { margin-top:10px; padding:6px 10px; background:var(--suave); border-radius:4px; font-size:.9rem; }
+  #registro { height:290px; overflow:auto; margin:0; padding:8px; list-style:none; background:#101828; color:#d7e3ff; font:13px/1.5 Consolas, monospace; border-radius:4px; }
+  #registro li span { color:#7ee0a3; }
+  details { background:#fff; border:1px solid var(--linea); border-radius:6px; padding:10px 14px; margin:8px 0; }
+  summary { cursor:pointer; font-weight:bold; }
+  code { background:var(--suave); padding:1px 5px; border-radius:3px; font-size:.9em; }
+  ol li { margin:4px 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Actividad práctica: modelo orientado a eventos</h1>
+  <p>En este modelo el programa no sigue un orden fijo: espera a que el usuario haga algo (clic, tecla, movimiento del ratón) y ejecuta la función que responde a ese evento. Prueba la aplicación y observa el registro de eventos a la derecha.</p>
+
+  <div class="grid">
+    <section class="panel" aria-label="Gestor de tareas">
+      <h3>Gestor de tareas</h3>
+      <div class="fila">
+        <input type="text" id="entrada" placeholder="Escribe una tarea" autocomplete="off">
+        <button id="btnAgregar">Agregar</button>
+        <button id="btnEliminar" class="sec">Eliminar</button>
+      </div>
+      <ul id="lista" aria-label="Lista de tareas"></ul>
+      <div id="estado" role="status">Listo</div>
+    </section>
+
+    <section class="panel" aria-label="Registro de eventos">
+      <h3>Registro de eventos</h3>
+      <ul id="registro"></ul>
+    </section>
+  </div>
+
+  <h2>Parte 1: analizar</h2>
+  <p>Lee el código del archivo (abre <code>actividad_eventos.html</code> en VS Code) y responde por escrito:</p>
+  <ol>
+    <li>¿Qué evento dispara cada función?</li>
+    <li>¿Qué hace <code>addEventListener</code> y por qué no hay un bucle que revise el teclado?</li>
+    <li>¿Qué diferencia hay entre los eventos <code>click</code> y <code>dblclick</code>?</li>
+  </ol>
+
+  <h2>Parte 2: completar el código</h2>
+  <details>
+    <summary>TODO 1: tecla Suprimir</summary>
+    <p>Al pulsar <code>Delete</code> con la lista enfocada, elimina la tarea seleccionada. Usa el evento <code>keydown</code> y revisa <code>evento.key</code>.</p>
+  </details>
+  <details>
+    <summary>TODO 2: contador de caracteres</summary>
+    <p>Con el evento <code>input</code> del campo de texto, muestra en la barra de estado cuántos caracteres lleva escritos el usuario.</p>
+  </details>
+  <details>
+    <summary>TODO 3: marcar como completada</summary>
+    <p>Con un doble clic sobre una tarea, alterna la clase <code>hecha</code> usando <code>classList.toggle("hecha")</code>.</p>
+  </details>
+
+  <h2>Parte 3: ampliar (opcional)</h2>
+  <p>Agrega un botón "Limpiar todo" con <code>confirm()</code>, guarda las tareas en <code>localStorage</code>, o cambia el color de fondo con un clic derecho (<code>contextmenu</code>).</p>
+
+  <h2>Evaluación (100 puntos)</h2>
+  <p>Respuestas de la Parte 1: 20. TODO 1, 2 y 3 funcionando: 45. Código ordenado y comentado: 15. Mejora opcional: 20.</p>
+</main>
+
+<script>
+// ---------- Referencias a elementos ----------
+const entrada = document.getElementById("entrada");
+const btnAgregar = document.getElementById("btnAgregar");
+const btnEliminar = document.getElementById("btnEliminar");
+const lista = document.getElementById("lista");
+const estado = document.getElementById("estado");
+const registro = document.getElementById("registro");
+
+let seleccionada = null;
+
+function registrar(nombre, detalle = "") {
+  const li = document.createElement("li");
+  li.innerHTML = "<span>" + nombre + "</span> " + detalle;
+  registro.prepend(li);
+}
+
+// ---------- Funciones manejadoras ----------
+function agregarTarea() {
+  const texto = entrada.value.trim();
+  if (!texto) { estado.textContent = "Escribe una tarea primero"; return; }
+  const li = document.createElement("li");
+  li.textContent = texto;
+  li.tabIndex = 0;
+  lista.appendChild(li);
+  entrada.value = "";
+  entrada.focus();
+  estado.textContent = "Tarea agregada. Total: " + lista.children.length;
+}
+
+function eliminarTarea() {
+  if (!seleccionada) { estado.textContent = "Selecciona una tarea para eliminar"; return; }
+  seleccionada.remove();
+  seleccionada = null;
+  estado.textContent = "Tarea eliminada. Total: " + lista.children.length;
+}
+
+// ---------- Enlace de eventos ----------
+btnAgregar.addEventListener("click", () => { registrar("click", "en Agregar"); agregarTarea(); });
+btnEliminar.addEventListener("click", () => { registrar("click", "en Eliminar"); eliminarTarea(); });
+
+entrada.addEventListener("keydown", (evento) => {
+  if (evento.key === "Enter") { registrar("keydown", "Enter"); agregarTarea(); }
+});
+
+btnAgregar.addEventListener("mouseenter", () => {
+  btnAgregar.classList.add("resaltado");
+  estado.textContent = "Haz clic para agregar la tarea";
+  registrar("mouseenter", "sobre Agregar");
+});
+btnAgregar.addEventListener("mouseleave", () => {
+  btnAgregar.classList.remove("resaltado");
+  estado.textContent = "Listo";
+  registrar("mouseleave", "fuera de Agregar");
+});
+
+// Seleccionar una tarea con un clic
+lista.addEventListener("click", (evento) => {
+  const item = evento.target.closest("li");
+  if (!item) return;
+  if (seleccionada) seleccionada.classList.remove("seleccionada");
+  seleccionada = item;
+  item.classList.add("seleccionada");
+  registrar("click", "en una tarea");
+});
+
+// TODO 1: escucha el evento "keydown" en la lista (lista.addEventListener).
+//         Si evento.key === "Delete", llama a eliminarTarea().
+//         No olvides llamar a registrar("keydown", "Delete").
+
+
+// TODO 2: escucha el evento "input" en la entrada (entrada.addEventListener).
+//         Muestra en "estado" cuántos caracteres hay: entrada.value.length
+
+
+// TODO 3: escucha el evento "dblclick" en la lista.
+//         Con evento.target.closest("li"), alterna la clase "hecha":
+//         item.classList.toggle("hecha")
+
+</script>
+</body>
+</html>
